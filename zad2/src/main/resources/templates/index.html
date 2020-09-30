@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SI_LAB</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        table {
+            margin: 10px;
+        }
+
+        tr:first-child td {
+            border-top-color: black;
+        }
+
+        tr:nth-child(3n) td {
+            border-bottom-color: black;
+        }
+
+        td {
+            border: 1px solid lightgrey;
+            height: 40px;
+            width: 40px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        td:first-child {
+            border-left-color: black;
+        }
+
+        td:nth-child(3n) {
+            border-right-color: black;
+        }
+
+        span {
+            padding: 0;
+            text-align: center;
+            border: 0;
+            height: 40px;
+            width: 40px;
+            /*text-align: center;*/
+        }
+
+        span:hover {
+            background: #ffffff;
+        }
+        .form-group > label{
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1 class="text-center my-3">Sudoku</h1>
+        <!-- <div class="container"> -->
+        <form action="#" th:action="@{/solution}" th:object="${formDto}" id="form" method="post">
+            <div class="card px-3">
+                <div class="form-group mt-2">
+                    <label for="instance">Wybierz instancje (1-46)</label>
+                    <input type="number" class="form-control" th:field="*{instance}" min="1" max="46" name="instance"
+                        id="instance">
+                </div>
+                <div class="form-group">
+                    <label>Wybierz metodę</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{method}" name="method" id="backtrack"
+                            value="backtrack" th:checked="${true}" checked>
+                        <label class="form-check-label" for="backtrack">
+                            Przeszukiwanie z nawrotami
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" th:field="*{method}" name="method" id="forward"
+                            value="forward">
+                        <label class="form-check-label" for="forward">
+                            Sprawdzanie w przód
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="varchoice">Wybierz heurystykę wyboru zmiennej</label>
+                    <select class="form-control" th:field="*{varchoice}" name="varchoice" id="varchoice">
+                        <option value="order">Kolejność definicji</option>
+                        <option value="random">Losowo</option>
+                        <option value="less-constraint">Zmienna najbardziej ograniczona</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="valuechoice">Wybierz heurystykę wyboru wartości</label>
+                    <select class="form-control" th:field="*{valuechoice}" name="valuechoice" id="valuechoice">
+                        <option value="order">Kolejność definicji</option>
+                        <option value="random">Losowo</option>
+                        <option value="less-constraint">Wartość najmniej ograniczająca</option>
+                    </select>
+                </div>
+                <div class="text-center my-2">
+                    <input type="submit" id="sub" class="btn btn-primary" value="Rozwiąż">
+                </div>
+        </form>
+        <!-- </div> -->
+    </div>
+</body>
+
+</html>

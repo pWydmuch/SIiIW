@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>SI_LAB</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .my-centre{
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="text-center mt-3">Travelling Salesman Problem</h1>
+    <div class="container">
+        <form action="#" th:action="@{/best}" th:object="${formDto}" id="form" method="post">
+            <div class="form-group">
+                <label for="instance">Select TSP instance</label>
+                <select class="form-control" th:field="*{instance}" name="instance" id="instance">
+                    <optgroup label="easy">
+                        <option value="berlin11_modified">berlin11_modified</option>
+                        <option value="berlin52">berlin52</option>
+                    </optgroup>
+                    <optgroup label="medium">
+                        <option value="kroA100">kroA100</option>
+                        <option value="kroA150">kroA150</option>
+                        <option value="kroA200">kroA200</option>
+                    </optgroup>
+                    <optgroup label="hard">
+                        <option>fl417</option>
+                        <!--<option>ali535</option>-->
+                        <!--<option>gr666</option>-->
+                    </optgroup>
+                    <!--<optgroup label="challenge">-->
+                        <!--<option>nrw1379</option>-->
+                        <!--<option>pr2392</option>-->
+                    <!--</optgroup>-->
+                </select>
+            </div>
+            <div class="card my-3">
+                <div class=" d-flex justify-content-around my-3">
+                    <div>
+                        <p>Select selection type</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{selection}" name="selection"
+                                id="tour" value="tour" th:checked="${true}" checked>
+                            <label class="form-check-label" for="tour">
+                                Tournament
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{selection}" name="selection"
+                                id="roulette" value="roulette">
+                            <label class="form-check-label" for="roulette">
+                                Roulette
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <p>Select cross type</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{cross}" name="cross" id="ox"
+                                value="ox" checked>
+                            <label class="form-check-label" for="ox">
+                                OX
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{cross}" name="cross" id="pmx"
+                                value="pmx">
+                            <label class="form-check-label" for="pmx">
+                                PMX
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{cross}" name="cross" id="cx"
+                                value="cx">
+                            <label class="form-check-label" for="cx">
+                                CX
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <p>Select mutation type</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{mutation}" name="mutation"
+                                id="swap" value="swap" checked>
+                            <label class="form-check-label" for="swap">
+                                Swap
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{mutation}" name="mutation"
+                                id="inverse" value="inverse" >
+                            <label class="form-check-label" for="inverse">
+                                Inverse
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="popSize">Population size</label>
+                <input type="number" th:field="*{popSize}" name="popSize" class="form-control" id="popSize">
+            </div>
+            <div class="form-group">
+                <label for="genNr">Generations number</label>
+                <input type="number" th:field="*{genNr}" name="genNr" class="form-control" id="genNr">
+            </div>
+            <div class="form-group">
+                <label for="crossProb">Cross probability</label>
+                <input type="text" th:field="*{crossProb}" name="crossProb" class="form-control"
+                    id="crossProb">
+            </div>
+            <div class="form-group">
+                <label for="crossProb">Mutation probability</label>
+                <input type="text" th:field="*{mutProb}" name="mutProb" class="form-control"
+                    id="mutProb">
+            </div>
+            <div class="form-group" id="tour-size-div">
+                <label for="tourSize">Tournament size</label>
+                <input type="number" th:field="*{tourSize}" name="tourSize" class="form-control" value="5" id="tourSize">
+            </div>
+            <div class="text-center my-3">
+            <input class="mt-3" type="submit" id="sub" value="Find best">
+            </div>
+            <!--<div class="mt-2 alert alert-danger ">-->
+
+            <!--</div>-->
+        </form>
+    </div>
+    <div class="text-center" style="display: none" id="spinner">
+        <div class="spinner-border"  role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <p>Please wait</p>
+    </div>
+<script>
+
+    const ctx = document.getElementById('form');
+    const sp = document.getElementById('spinner');
+    ctx.addEventListener("submit",(e)=>{
+
+        sp.style.display="block";
+        sp.classList.add("my-centre");
+        document.body.style.opacity="0.5";
+
+    })
+
+    const tourDiv = document.getElementById('tour-size-div');
+    const tourRadio = document.getElementById('tour');
+    const rouletteRadio = document.getElementById('roulette');
+    tourRadio.addEventListener('click',()=>{
+        tourDiv.style.display="block";
+    })
+    rouletteRadio.addEventListener('click',()=>{
+        tourDiv.style.display="none";
+    })
+    // ctx.style.display='none';
+</script>
+</body>
+
+</html>
